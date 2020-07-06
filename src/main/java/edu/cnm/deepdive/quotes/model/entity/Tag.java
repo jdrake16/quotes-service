@@ -30,12 +30,10 @@ public class Tag implements FlatTag {
   @Column(name = "tag_id", nullable = false, updatable = false)
   private Long id;
 
-
   @CreationTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false, updatable = false)
   private Date created;
-
 
   @UpdateTimestamp
   @Temporal(TemporalType.TIMESTAMP)
@@ -83,4 +81,5 @@ public class Tag implements FlatTag {
   public List<Quote> getQuotes() {
     return quotes;
   }
+
 }

@@ -29,18 +29,15 @@ import org.springframework.lang.NonNull;
 @Entity
 public class Quote implements FlatQuote {
 
-
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "quote_id", nullable = false, updatable = false)
   private Long id;
 
-
   @CreationTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false, updatable = false)
   private Date created;
-
 
   @UpdateTimestamp
   @Temporal(TemporalType.TIMESTAMP)
@@ -52,13 +49,13 @@ public class Quote implements FlatQuote {
   private String text;
 
   @ManyToOne(fetch = FetchType.EAGER,
-    cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+      cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
   @JoinColumn(name = "source_id", nullable = false)
   @JsonSerialize(as = FlatSource.class)
   private Source source;
 
   @ManyToMany(fetch = FetchType.EAGER,
-    cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+      cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
   @JoinTable(name = "quote_tag", joinColumns = @JoinColumn(name = "quote_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
   @OrderBy("name ASC")
@@ -101,4 +98,5 @@ public class Quote implements FlatQuote {
   public List<Tag> getTags() {
     return tags;
   }
+
 }
