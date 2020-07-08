@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,13 +47,15 @@ public class QuoteController {
   @ResponseStatus(HttpStatus.CREATED)
   public Quote post(@RequestBody Quote quote) {
     if (quote.getSource() != null && quote.getSource().getId() != null) {
-      quote.setSource(sourceRepository.findById(quote.getSource().getId()).orElseThrow(
-          NoSuchElementException::new));
+      quote.setSource(
+          sourceRepository.findById(
+              quote.getSource().getId()
+          ).orElseThrow(NoSuchElementException::new)
+      );
     }
     List<Tag> resolvedTags = quote.getTags().stream()
-        .map((tag) ->
-            (tag.getId() == null) ? tag :tagRepository.findById(tag.getId())
-                .orElseThrow(NoSuchElementException::new))
+        .map((tag) -> (tag.getId() == null) ?
+            tag : tagRepository.findById(tag.getId()).orElseThrow(NoSuchElementException::new))
         .collect(Collectors.toList());
     quote.getTags().clear();
     quote.getTags().addAll(resolvedTags);
@@ -62,6 +65,11 @@ public class QuoteController {
   @GetMapping(value = "/{id:\\d+}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Quote get(@PathVariable long id) {
     return quoteRepository.findById(id).orElseThrow(NoSuchElementException::new);
+  }
+
+  @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+  public Iterable<Quote> search(@RequestParam(name = "q", required = true) String filter) {
+    return quoteRepository.getAllByTextContainingOrderByTextAsc(filter);
   }
 
 }
