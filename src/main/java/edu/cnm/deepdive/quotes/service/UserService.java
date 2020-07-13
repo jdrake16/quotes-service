@@ -1,6 +1,7 @@
 package edu.cnm.deepdive.quotes.service;
 
 import edu.cnm.deepdive.quotes.model.entity.User;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
   private final UserRepository userRepository;
+
 
   @Autowired
   public UserService(UserRepository userRepository) {
@@ -23,4 +25,9 @@ public class UserService {
           return userRepository.save(user);
         });
   }
+
+  public Optional<User> get(Long id) {
+    return userRepository.findById(id);
+  }
+
 }
