@@ -5,7 +5,7 @@ import java.net.URI;
 import java.util.Date;
 
 
-@JsonPropertyOrder(value = {"id", "created", "updated", "text"})
+@JsonPropertyOrder(value = {"id", "created", "updated", "text", "href"})
 public interface FlatQuote {
 
   Long getId();

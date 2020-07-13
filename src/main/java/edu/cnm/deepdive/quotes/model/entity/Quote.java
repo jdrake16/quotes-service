@@ -1,5 +1,6 @@
 package edu.cnm.deepdive.quotes.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import edu.cnm.deepdive.quotes.view.FlatQuote;
 import edu.cnm.deepdive.quotes.view.FlatSource;
@@ -33,6 +34,11 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
 @Component
+@JsonIgnoreProperties(
+    value = {"id", "created", "updated", "href"},
+    allowGetters = true,
+    ignoreUnknown = true
+)
 public class Quote implements FlatQuote {
 
   private static EntityLinks entityLinks;
@@ -61,6 +67,11 @@ public class Quote implements FlatQuote {
   @JoinColumn(name = "source_id")
   @JsonSerialize(as = FlatSource.class)
   private Source source;
+
+  @ManyToOne(fetch = FetchType.EAGER,
+      cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+  @JoinColumn(name = "contributor_id")
+  private User contributor;
 
   @ManyToMany(fetch = FetchType.EAGER,
       cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
@@ -109,6 +120,7 @@ public class Quote implements FlatQuote {
 
   @PostConstruct
   private void initHateoas() {
+    //noinspection ResultOfMethodCallIgnored
     entityLinks.toString();
   }
 
@@ -122,4 +134,5 @@ public class Quote implements FlatQuote {
   public URI getHref() {
     return (id != null) ? entityLinks.linkForItemResource(Quote.class, id).toUri() : null;
   }
+
 }
